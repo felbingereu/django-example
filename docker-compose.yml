@@ -1,0 +1,23 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - "./resources/nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "app-static:/usr/share/nginx/html/static/"
+
+  app:
+    build:
+      context: app
+    restart: always
+    environment:
+      - "ALLOWED_HOSTS=app"
+      - "DEBUG=1"
+      - "PUBLIC_URL=http://127.0.0.1:8080"
+    volumes:
+      - "app-static:/home/app/web/static"
+
+volumes:
+  app-static:
