@@ -14,6 +14,8 @@ FROM python:${PY_VERSION}-alpine
 # app config
 ENV ALLOWED_HOSTS='0.0.0.0' DEBUG=0
 
+ENV SQL_ENGINE="django.db.backends.postgresql" SQL_PORT=5432
+
 # create the app user and directories
 ENV HOME=/home/app
 RUN mkdir -p ${HOME}/web/static \

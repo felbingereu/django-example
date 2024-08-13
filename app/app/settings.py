@@ -88,10 +88,19 @@ WSGI_APPLICATION = "app.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "ENGINE": environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+for alias, obj in DATABASES.items():
+    if obj["ENGINE"] == "django.db.backends.sqlite3":
+        continue
+    DATABASES[alias]["USER"] = environ.get("SQL_USER")
+    DATABASES[alias]["PASSWORD"] = environ.get("SQL_PASSWORD")
+    DATABASES[alias]["HOST"] = environ.get("SQL_HOST")
+    DATABASES[alias]["PORT"] = environ.get("SQL_PORT")
+    DATABASES[alias]["NAME"] = environ.get("SQL_DATABASE")
 
 
 # Password validation
