@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import random
+from os import environ
+from string import punctuation, digits, ascii_letters
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ij##go!pf4k^#vac=pmdkqo)syf#8(3+m5%n%#5t496bn_^=m*"
+SECRET_KEY = environ.get(
+    "SECRET_KEY",
+    repr(
+        "".join(
+            [
+                random.SystemRandom().choice(ascii_letters + digits + punctuation)
+                for i in range(random.randint(64, 80))
+            ]
+        )
+    ),
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
