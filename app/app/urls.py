@@ -18,8 +18,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from base.views import manifest
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("manifest.json", manifest),
 ]
 
 admin.site.site_header = admin.site.site_title = "Django example"
