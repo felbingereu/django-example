@@ -1,7 +1,5 @@
 {
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  };
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
   outputs =
     { self, nixpkgs }:
@@ -22,15 +20,31 @@
           pkgs = import nixpkgs { inherit system; };
         in
         rec {
-          django-example = (pkgs.lib.callPackageWith pkgs.python312.pkgs) ./nix/django-example.nix { };
+          django-example = pkgs.callPackage ./nix/package.nix { };
+          default = django-example;
+        }
+      );
+
+      checks = eachDefaultSystem (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        rec {
+          django-example = pkgs.callPackage ./nix/test.nix { inherit self system nixpkgs; };
           default = django-example;
         }
       );
 
       nixosModules = rec {
-        django-example = {
-          imports = [ ./nix/module.nix ];
-        };
+        django-example =
+          { config, lib, ... }:
+          {
+            imports = [ ./nix/module.nix ];
+            nixpkgs.overlays = lib.mkIf config.myapps.django-example.enable [
+              self.overlays.default
+            ];
+          };
         default = django-example;
       };
 
@@ -40,9 +54,18 @@
           pkgs = import nixpkgs { inherit system; };
         in
         {
-          # TODO integrate python layout, which is currently in .envrc
-          default = pkgs.mkShell { packages = with pkgs; [ python312 ]; };
+          default = pkgs.mkShell {
+            inputsFrom = [ self.packages.${system}.default ];
+            packages = with pkgs; [
+              python315
+            ];
+          };
         }
       );
+      overlays = {
+        default = final: _prev: {
+          inherit (self.packages.${final.stdenv.hostPlatform.system}) django-example;
+        };
+      };
     };
 }
