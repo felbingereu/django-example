@@ -396,3 +396,6 @@ $RECYCLE.BIN/
 
 # Django database
 app/db.sqlite3
+result
+
+.nixos-test-history

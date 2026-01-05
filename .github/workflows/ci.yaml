@@ -57,8 +57,42 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
+  nixfmt:
+    name: nixfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v21
+
+      - uses: actions/checkout@v6
+
+      - name: nixfmt
+        run: nix run nixpkgs#nixfmt-rfc-style -- --check .
+
+  deadnix:
+    name: deadnix
+    runs-on: ubuntu-latest
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v21
+
+      - uses: actions/checkout@v6
+
+      - name: deadnix
+        run: nix run nixpkgs#deadnix -- --fail .
+
+  check:
+    name: nix flake check
+    needs: [ nixfmt, deadnix ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v21
+
+      - uses: actions/checkout@v6
+
+      - name: Check flake
+        run: nix -L flake check
+
   docker:
-    needs: [lint]
+    needs: [ lint ]
     runs-on: ubuntu-latest
 
     permissions:
