@@ -25,9 +25,8 @@ in
       default = [ ];
     };
     domain = mkOption {
-      # TODO configure django
       type = types.str;
-      default = "django-example.${toString config.networking.fqdn}";
+      default = "django-example.${toString config.networking.fqdnOrHostName}";
     };
     listenAddr = mkOption {
       type = types.str;
@@ -62,6 +61,11 @@ in
         type = types.str;
         default = "django-example";
       };
+    };
+    debug = mkEnableOption "debug";
+    allowedHosts = mkOption {
+      type = with types; nullOr (listOf str);
+      default = null;
     };
   };
 
@@ -126,6 +130,10 @@ in
             environment = {
               PYTHONPATH = "${cfg.package.python3.pkgs.makePythonPath cfg.package.propagatedBuildInputs}:${cfg.package}/lib/django-example";
 
+              DEBUG = if cfg.debug then "1" else "0";
+              ALLOWED_HOSTS = lib.mkIf (cfg.allowedHosts != null) (lib.concatStringsSep " " cfg.allowedHosts);
+              PUBLIC_URL = "https://${cfg.domain}";
+
               SQL_ENGINE = "django.db.backends.postgresql";
               SQL_HOST = cfg.database.hostname;
               SQL_PORT = lib.mkIf (cfg.database.port != null) (toString cfg.database.port);
@@ -133,6 +141,18 @@ in
               SQL_PASSWORD_FILE = lib.mkIf (cfg.database.passwordFile != null) "%d/sql_password";
               SQL_DATABASE = cfg.database.name;
             };
+          };
+        };
+
+        services.nginx = {
+          enable = true;
+          virtualHosts.${toString cfg.domain} = {
+            locations."/" = {
+              proxyPass = "http://${cfg.listenAddr}:${toString cfg.port}";
+              proxyWebsockets = true;
+            };
+            locations."/static/".root = "${cfg.package}/lib/django-example/";
+            serverName = toString cfg.domain;
           };
         };
       }
