@@ -61,7 +61,7 @@ jobs:
     name: nixfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/nix-installer-action@v22
 
       - uses: actions/checkout@v6
 
@@ -72,7 +72,7 @@ jobs:
     name: deadnix
     runs-on: ubuntu-latest
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/nix-installer-action@v22
 
       - uses: actions/checkout@v6
 
@@ -84,7 +84,7 @@ jobs:
     needs: [ nixfmt, deadnix ]
     runs-on: ubuntu-latest
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/nix-installer-action@v22
 
       - uses: actions/checkout@v6
 
