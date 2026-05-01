@@ -1,5 +1,10 @@
 Django>=5.1
+<<<<<<< dependabot/pip/app/gunicorn-gte-25.3.0
 black>=24.8.0
 gunicorn>=25.3.0
+=======
+black>=26.3.1
+gunicorn>=23.0.0
+>>>>>>> main
 psycopg2-binary>=2.9.9
-djangorestframework>=3.15.2
+djangorestframework>=3.17.1
