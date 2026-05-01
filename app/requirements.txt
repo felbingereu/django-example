@@ -1,5 +1,5 @@
 Django>=5.1
 black>=26.3.1
 gunicorn>=23.0.0
-psycopg2-binary>=2.9.9
+psycopg2-binary>=2.9.12
 djangorestframework>=3.17.1
