@@ -42,7 +42,7 @@ pkgs.testers.nixosTest {
 
     machine.wait_for_unit("django-example.service")
 
-    machine.wait_until_succeeds("ss -tlpn | grep 8000")
+    machine.wait_for_open_port(8000)
 
     machine.succeed("""
       curl -s http://127.0.0.1:8000/manifest.json | ${lib.getExe pkgs.jq} '.display == "standalone"'
