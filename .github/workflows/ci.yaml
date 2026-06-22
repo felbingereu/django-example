@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v6
@@ -63,7 +63,7 @@ jobs:
     steps:
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: nixfmt
         run: nix run nixpkgs#nixfmt-rfc-style -- --check .
@@ -74,7 +74,7 @@ jobs:
     steps:
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: deadnix
         run: nix run nixpkgs#deadnix -- --fail .
@@ -86,7 +86,7 @@ jobs:
     steps:
       - uses: DeterminateSystems/nix-installer-action@v22
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check flake
         run: nix -L flake check
@@ -100,7 +100,7 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Docker meta
         id: docker_meta
